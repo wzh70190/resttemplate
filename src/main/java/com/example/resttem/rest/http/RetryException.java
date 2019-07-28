@@ -3,7 +3,7 @@ package com.example.resttem.rest.http;
 /**
  * Created by wangxindong on 18/5/17
  */
-public class RetryException extends RuntimeException {
+public class RetryException  {
 
     private Object result;
 

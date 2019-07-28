@@ -58,7 +58,7 @@ public class CommonExecutors implements HttpExecutors {
                     logger.info("[HttpExecutors--HTTP请求{}，准备退出]", null == retryer ? "无重试机制" : null == retryMeta || retryMeta.getMaxAttempts() == 0 ? "无重试次数" : retryMeta.getAttempt() > retryMeta.getMaxAttempts() ? "到达重试临界值" : "不满足重试要求");
                     if (null != exception.getResult()) {
                         //跳出重试时任务执行没有异常
-                        logger.info("[HttpExecutors--退出--HTTP请求状态正常，返回结果可能未能达到预期]-[总耗时：{}]", System.currentTimeMillis() - overallStartTime);
+                        logger.info("[HttpExecutors--退出--HTTP请求状态正常]-[总耗时：{}]", System.currentTimeMillis() - overallStartTime);
                         return result;
                     } else {
                         //跳出重试时任务执行发生异常

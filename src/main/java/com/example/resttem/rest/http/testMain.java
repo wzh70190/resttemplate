@@ -3,11 +3,11 @@ package com.example.resttem.rest.http;
 import com.alibaba.fastjson.JSONObject;
 import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
 
 import java.net.URI;
 import java.util.HashMap;
@@ -22,12 +22,22 @@ public class testMain {
     @ResponseBody
     @GetMapping("test1")
     public void test1() {
-        Object requestObject = new Object();
-        String x="http://test.jubao56.com/general?method=userlogin&app_id=zhongchu&app_secret=mlk34kz98u23lkjsa932lksa&app_key=M1ulq7IP&param=K8RbQIUPG1LTPg%2FHjpLa%2FjSW4OiNx4rHW2yqmLOYwSf%2F111ry9D3oeK1%2Bv2bXxb0";
+
+        String x = "http://test.jubao56.com/general?method=userlogin&app_id=zhongchu&app_secret=mlk34kz98u23lkjsa932lksa&app_key=M1ulq7IP&param=K8RbQIUPG1LTPg%2FHjpLa%2FjSW4OiNx4rHW2yqmLOYwSf%2F111ry9D3oeK1%2Bv2bXxb0";
         try {
             JSONObject excutor = httpClient.executor((RestTemplate r) -> r.getForObject(new URI(x), JSONObject.class),
-                    (RetryException e) -> true,
-                    new Retryer.RetryMeta(2, 2000), RestTemplateType.LONG);
+                    (RetryException e) -> {
+                        if (null != e.getResult()) {
+                            String errCode = ((JSONObject) (e.getResult())).getString("err_code");
+                            if (!StringUtils.isEmpty(errCode) && "0".equals(errCode)) {
+                                return false;
+                            }
+                            return true;
+                        }
+                        return true;
+                    },
+                    new Retryer.RetryMeta(2, 2000), RestTemplateType.COMMON);
+            System.out.println(excutor);
         } catch (Exception e) {
             e.printStackTrace();
         }
